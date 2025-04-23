@@ -18,26 +18,26 @@ format() {
 }
 
 compile() {
-  go vet ./...
+  go vet -tags github.sttk.errs.notify ./...
   errcheck $?
-  go build -ldflags '-X "github.com/sttk/errs.notify=true"' ./...
+  go build -tags github.sttk.errs.notify
   errcheck $?
 }
 
 test() {
-  go test -v $(go list ./... | grep -v /benchmark)
+  go test -tags github.sttk.errs.notify -v $(go list ./... | grep -v /benchmark)
   errcheck $?
 }
 
 unit() {
-  go test -v -run $1 $(go list ./... | grep -v /benchmark)
+  go test -tags github.sttk.errs.notify -v -run $1 $(go list ./... | grep -v /benchmark)
   errcheck $?
 }
 
 cover() {
   mkdir -p coverage
   errcheck $?
-  go test -coverprofile=coverage/cover.out $(go list ./... | grep -v /benchmark)
+  go test -tags github.sttk.errs.notify -coverprofile=coverage/cover.out $(go list ./... | grep -v /benchmark)
   errcheck $?
   go tool cover -html=coverage/cover.out -o coverage/cover.html
   errcheck $?
@@ -49,7 +49,7 @@ bench() {
     dir="."
   fi
   pushd $dir
-  go test -bench . --benchmem
+  go test -tags github.sttk.errs.notify -bench . --benchmem
   errcheck $?
   popd
 }
