@@ -182,48 +182,36 @@ func (e Err) Error() string {
 				buf.WriteString(fmt.Sprintf("%v", v.Interface()))
 			}
 		} else {
-			v := reflect.ValueOf(e.reason)
+			t := v.Type()
 
-			if v.Kind() == reflect.Ptr {
-				v = v.Elem()
+			s := t.PkgPath()
+			if len(s) > 0 {
+				buf.WriteString(s)
+				buf.WriteByte('.')
 			}
+			buf.WriteString(t.Name())
 
-			if v.Kind() != reflect.Struct {
-				if v.CanInterface() {
-					buf.WriteString(fmt.Sprintf("%v", v.Interface()))
-				}
-			} else {
-				t := v.Type()
+			n := v.NumField()
 
-				s := t.PkgPath()
-				if len(s) > 0 {
-					buf.WriteString(s)
-					buf.WriteByte('.')
-				}
-				buf.WriteString(t.Name())
+			if n > 0 {
+				buf.WriteString(" { ")
 
-				n := v.NumField()
-
-				if n > 0 {
-					buf.WriteString(" { ")
-
-					for i := 0; i < n; i++ {
-						if i > 0 {
-							buf.WriteString(", ")
-						}
-
-						k := t.Field(i).Name
-
-						f := v.Field(i)
-						if f.CanInterface() { // false, if the field is not public
-							buf.WriteString(k)
-							buf.WriteString(": ")
-							buf.WriteString(fmt.Sprintf("%v", f.Interface()))
-						}
+				for i := 0; i < n; i++ {
+					if i > 0 {
+						buf.WriteString(", ")
 					}
 
-					buf.WriteString(" }")
+					k := t.Field(i).Name
+
+					f := v.Field(i)
+					if f.CanInterface() { // false, if the field is not public
+						buf.WriteString(k)
+						buf.WriteString(": ")
+						buf.WriteString(fmt.Sprintf("%v", f.Interface()))
+					}
 				}
+
+				buf.WriteString(" }")
 			}
 		}
 	}
