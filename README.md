@@ -75,7 +75,7 @@ func f3() error {
 It is enabled to take a cause error.
 
 ```go
-var cause := errors.New("I/O timeout")
+var cause = errors.New("I/O timeout")
 
 func f4() errs.Err {
     ...
@@ -88,7 +88,7 @@ func f4() errs.Err {
 ```go
 err := f4()
 
-fmt.Println(err.Reason())  // => path/to/pkg.FailToDoWithParam { Param1: abc, Param2: 123 }
+fmt.Println(err.Reason())  // => path/to/pkg.FailToDoWithParams { Param1: abc, Param2: 123 }
 fmt.Println(err.File())    // e.g. source_file.go
 fmt.Println(err.Line())    // e.g. 123
 fmt.Println(err.Cause())   // => I/O timeout
