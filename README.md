@@ -3,7 +3,7 @@
 `errs` is a package for handling errors with reasons for Golang programs.
 
 This package provides the structure type `Err` which takes a parameter of any type as a reason of an error. 
-This parameter is typically a structure type, and its name represents the reason, and its fields represents the situation where the error occurred.
+This parameter is typically a structure type, and its name represents the reason, and its fields represent the situation where the error occurred.
 
 ## Features
 
@@ -101,14 +101,14 @@ fmt.Println(err.Unwrap())  // => I/O timeout
 fmt.Println(errors.Is(err, cause)) // => true
 ```
 ```go
-err := fn0().IfOkThen(func() errs.Err {
+err := f0().IfOkThen(func() errs.Err {
     // This function is executed.
 })
 ```
 ```go
-err := fn1().IsOkThen(func() errs.Err {
+err := f1().IsOkThen(func() errs.Err {
     // This function is not executed.
-}
+})
 ```
 
 ### Type-safe error handling
@@ -117,7 +117,7 @@ A reason of an `Err` can be identified with a type-switch statement.
 
 ```go
 switch reason := err.Reason().(type) {
-case FailToDoSomethong:
+case FailToDoSomething:
   fmt.Println("FailToDoSomething")
 case FailToDoWithParams:
   fmt.Printf("FailToDoWithParam: Param1 = %s, Param = %d\n", reason.Param1, reason.Param2)
