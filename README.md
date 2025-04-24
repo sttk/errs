@@ -2,7 +2,7 @@
 
 `errs` is a package for handling errors with reasons for Golang programs.
 
-This package provides the structure type `Err` which takes a parameter of any type as a reason of an error. 
+This package provides the structure type `Err` which takes a parameter of any type as a reason for an error.
 This parameter is typically a structure type, and its name represents the reason, and its fields represent the situation where the error occurred.
 
 ## Features
@@ -142,7 +142,7 @@ errs.AddAsyncErrHandler(func(e errs.Err, tm time.Time) {
 })
 ```
 
-Prevents to add more error handlers, and enable notification.
+Prevents the addition of extra error handlers and enables error notifications.
 
 ```go
 errs.FixErrHandlers()
