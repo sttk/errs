@@ -68,7 +68,7 @@ It is enabled to use an `Err` as an `error`.
 ```go
 func f3() error {
     ...
-    return &errs.New(FailToDoSomething{})
+    return errs.New(FailToDoSomething{})
 }
 ```
 
@@ -92,7 +92,7 @@ fmt.Println(err.Reason())  // => path/to/pkg.FailToDoWithParams { Param1: abc, P
 fmt.Println(err.File())    // e.g. source_file.go
 fmt.Println(err.Line())    // e.g. 123
 fmt.Println(err.Cause())   // => I/O timeout
-fmt.Println(err.Error())   // => github.com/sttk/errs.Err { reason = path/to/pkg.FailToDoWithParam { Param1: abc, Param2: 123 }, file = source_file.go, line = 123, cause = I/O timeout }
+fmt.Println(err.Error())   // => github.com/sttk/errs.Err { reason = path/to/pkg.FailToDoWithParams { Param1: abc, Param2: 123 }, file = source_file.go, line = 123, cause = I/O timeout }
 
 fmt.Println(err.IsOk())    // => true
 fmt.Println(err.IsNotOk()) // => false
