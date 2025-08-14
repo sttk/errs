@@ -160,34 +160,38 @@ This framework supports Go 1.18 or later.
 % gvm-fav -tags=github.sttk.errs.notify
 Now using version go1.18.10
 go version go1.18.10 darwin/amd64
-ok  	github.com/sttk/errs	0.804s	coverage: 100.0% of statements
+ok  	github.com/sttk/errs	0.958s	coverage: 100.0% of statements
 
 Now using version go1.19.13
 go version go1.19.13 darwin/amd64
-ok  	github.com/sttk/errs	0.858s	coverage: 100.0% of statements
+ok  	github.com/sttk/errs	0.986s	coverage: 100.0% of statements
 
 Now using version go1.20.14
 go version go1.20.14 darwin/amd64
-ok  	github.com/sttk/errs	0.787s	coverage: 100.0% of statements
+ok  	github.com/sttk/errs	0.969s	coverage: 100.0% of statements
 
 Now using version go1.21.13
 go version go1.21.13 darwin/amd64
-ok  	github.com/sttk/errs	0.789s	coverage: 100.0% of statements
+ok  	github.com/sttk/errs	0.969s	coverage: 100.0% of statements
 
-Now using version go1.22.10
-go version go1.22.10 darwin/amd64
-ok  	github.com/sttk/errs	0.793s	coverage: 100.0% of statements
+Now using version go1.22.12
+go version go1.22.12 darwin/amd64
+ok  	github.com/sttk/errs	0.968s	coverage: 100.0% of statements
 
-Now using version go1.23.8
-go version go1.23.8 darwin/amd64
-ok  	github.com/sttk/errs	0.795s	coverage: 100.0% of statements
+Now using version go1.23.10
+go version go1.23.10 darwin/amd64
+ok  	github.com/sttk/errs	0.970s	coverage: 100.0% of statements
 
-Now using version go1.24.2
-go version go1.24.2 darwin/amd64
-ok  	github.com/sttk/errs	0.802s	coverage: 100.0% of statements
+Now using version go1.24.6
+go version go1.24.6 darwin/amd64
+ok  	github.com/sttk/errs	0.998s	coverage: 100.0% of statements
 
-Back to go1.24.2
-Now using version go1.24.2
+Now using version go1.25.0
+go version go1.25.0 darwin/amd64
+ok  	github.com/sttk/errs	0.994s	coverage: 100.0% of statements
+
+Back to go1.25.0
+Now using version go1.25.0
 ```
 
 ## License
