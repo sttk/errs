@@ -6,19 +6,9 @@ import (
 	"time"
 )
 
-type errHandlerListItem struct {
-	handler func(Err, time.Time)
-	next    *errHandlerListItem
-}
-
-type errHandlerList struct {
-	head *errHandlerListItem
-	last *errHandlerListItem
-}
-
 var (
-	syncErrHandlers    = errHandlerList{nil, nil}
-	asyncErrHandlers   = errHandlerList{nil, nil}
+	syncErrHandlers    []func(Err, time.Time)
+	asyncErrHandlers   []func(Err, time.Time)
 	isErrHandlersFixed = false
 )
 
@@ -30,17 +20,7 @@ func AddSyncErrHandler(handler func(Err, time.Time)) {
 	if isErrHandlersFixed {
 		return
 	}
-
-	last := syncErrHandlers.last
-	syncErrHandlers.last = &errHandlerListItem{handler, nil}
-
-	if last != nil {
-		last.next = syncErrHandlers.last
-	}
-
-	if syncErrHandlers.head == nil {
-		syncErrHandlers.head = syncErrHandlers.last
-	}
+	syncErrHandlers = append(syncErrHandlers, handler)
 }
 
 // AddAsyncErrHandler adds a new asynchronous error handler to the global handler list.
@@ -51,17 +31,7 @@ func AddAsyncErrHandler(handler func(Err, time.Time)) {
 	if isErrHandlersFixed {
 		return
 	}
-
-	last := asyncErrHandlers.last
-	asyncErrHandlers.last = &errHandlerListItem{handler, nil}
-
-	if last != nil {
-		last.next = asyncErrHandlers.last
-	}
-
-	if asyncErrHandlers.head == nil {
-		asyncErrHandlers.head = asyncErrHandlers.last
-	}
+	asyncErrHandlers = append(asyncErrHandlers, handler)
 }
 
 // FixErrHandlers prevents further modification of the error handler lists.
@@ -71,7 +41,16 @@ func AddAsyncErrHandler(handler func(Err, time.Time)) {
 //
 // NOTE: This function is enabled via the build tag: github.sttk.errs.notify
 func FixErrHandlers() {
+	if isErrHandlersFixed {
+		return
+	}
 	isErrHandlersFixed = true
+	syncErrHandlers = clip(syncErrHandlers)
+	asyncErrHandlers = clip(asyncErrHandlers)
+}
+
+func clip(s []func(Err, time.Time)) []func(Err, time.Time) {
+	return s[:len(s):len(s)]
 }
 
 func notifyErr(e Err) {
@@ -79,17 +58,17 @@ func notifyErr(e Err) {
 		return
 	}
 
-	if syncErrHandlers.head == nil && asyncErrHandlers.head == nil {
+	if len(syncErrHandlers) == 0 && len(asyncErrHandlers) == 0 {
 		return
 	}
 
 	tm := time.Now().UTC()
 
-	for item := syncErrHandlers.head; item != nil; item = item.next {
-		item.handler(e, tm)
+	for _, handler := range syncErrHandlers {
+		handler(e, tm)
 	}
 
-	for item := asyncErrHandlers.head; item != nil; item = item.next {
-		go item.handler(e, tm)
+	for _, handler := range asyncErrHandlers {
+		go handler(e, tm)
 	}
 }
