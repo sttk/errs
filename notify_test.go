@@ -11,10 +11,8 @@ import (
 )
 
 func ClearErrHandlers() {
-	syncErrHandlers.head = nil
-	syncErrHandlers.last = nil
-	asyncErrHandlers.head = nil
-	asyncErrHandlers.last = nil
+	syncErrHandlers = nil
+	asyncErrHandlers = nil
 	isErrHandlersFixed = false
 }
 
@@ -25,8 +23,8 @@ func TestAddErrSyncHandler(t *testing.T) {
 		ClearErrHandlers()
 		defer ClearErrHandlers()
 
-		assert.Nil(t, syncErrHandlers.head)
-		assert.Nil(t, syncErrHandlers.last)
+		assert.Empty(t, syncErrHandlers)
+		assert.Empty(t, syncErrHandlers)
 	})
 
 	t.Run("add one handler", func(t *testing.T) {
@@ -35,15 +33,10 @@ func TestAddErrSyncHandler(t *testing.T) {
 
 		AddSyncErrHandler(func(e Err, tm time.Time) {})
 
-		assert.NotNil(t, syncErrHandlers.head)
-		assert.NotNil(t, syncErrHandlers.last)
-		assert.Equal(t, syncErrHandlers.head, syncErrHandlers.last)
+		assert.Len(t, syncErrHandlers, 1)
+		assert.Equal(t, reflect.TypeOf(syncErrHandlers[0]).String(), fn_sig)
 
-		assert.Nil(t, syncErrHandlers.last.next)
-		assert.Nil(t, syncErrHandlers.head.next)
-
-		assert.NotNil(t, syncErrHandlers.head.handler)
-		assert.Equal(t, reflect.TypeOf(syncErrHandlers.head.handler).String(), fn_sig)
+		assert.Empty(t, asyncErrHandlers)
 	})
 
 	t.Run("add two handler", func(t *testing.T) {
@@ -53,18 +46,11 @@ func TestAddErrSyncHandler(t *testing.T) {
 		AddSyncErrHandler(func(e Err, tm time.Time) {})
 		AddSyncErrHandler(func(e Err, tm time.Time) {})
 
-		assert.NotNil(t, syncErrHandlers.head)
-		assert.NotNil(t, syncErrHandlers.last)
-		assert.NotEqual(t, syncErrHandlers.head, syncErrHandlers.last)
+		assert.Len(t, syncErrHandlers, 2)
+		assert.Equal(t, reflect.TypeOf(syncErrHandlers[0]).String(), fn_sig)
+		assert.Equal(t, reflect.TypeOf(syncErrHandlers[1]).String(), fn_sig)
 
-		assert.Equal(t, syncErrHandlers.head.next, syncErrHandlers.last)
-		assert.Nil(t, syncErrHandlers.last.next)
-
-		assert.NotNil(t, syncErrHandlers.head.handler)
-		assert.Equal(t, reflect.TypeOf(syncErrHandlers.head.handler).String(), fn_sig)
-
-		assert.NotNil(t, syncErrHandlers.head.next.handler)
-		assert.Equal(t, reflect.TypeOf(syncErrHandlers.head.next.handler).String(), fn_sig)
+		assert.Empty(t, asyncErrHandlers)
 	})
 }
 
@@ -75,8 +61,7 @@ func TestAddErrAsyncHandler(t *testing.T) {
 		ClearErrHandlers()
 		defer ClearErrHandlers()
 
-		assert.Nil(t, asyncErrHandlers.head)
-		assert.Nil(t, asyncErrHandlers.last)
+		assert.Empty(t, asyncErrHandlers)
 	})
 
 	t.Run("add one handler", func(t *testing.T) {
@@ -85,15 +70,10 @@ func TestAddErrAsyncHandler(t *testing.T) {
 
 		AddAsyncErrHandler(func(e Err, tm time.Time) {})
 
-		assert.NotNil(t, asyncErrHandlers.head)
-		assert.NotNil(t, asyncErrHandlers.last)
-		assert.Equal(t, asyncErrHandlers.head, asyncErrHandlers.last)
+		assert.Empty(t, syncErrHandlers)
 
-		assert.Nil(t, asyncErrHandlers.last.next)
-		assert.Nil(t, asyncErrHandlers.head.next)
-
-		assert.NotNil(t, asyncErrHandlers.head.handler)
-		assert.Equal(t, reflect.TypeOf(asyncErrHandlers.head.handler).String(), fn_sig)
+		assert.Len(t, asyncErrHandlers, 1)
+		assert.Equal(t, reflect.TypeOf(asyncErrHandlers[0]).String(), fn_sig)
 	})
 
 	t.Run("add two handler", func(t *testing.T) {
@@ -103,18 +83,11 @@ func TestAddErrAsyncHandler(t *testing.T) {
 		AddAsyncErrHandler(func(e Err, tm time.Time) {})
 		AddAsyncErrHandler(func(e Err, tm time.Time) {})
 
-		assert.NotNil(t, asyncErrHandlers.head)
-		assert.NotNil(t, asyncErrHandlers.last)
-		assert.NotEqual(t, asyncErrHandlers.head, asyncErrHandlers.last)
+		assert.Empty(t, syncErrHandlers)
 
-		assert.Equal(t, asyncErrHandlers.head.next, asyncErrHandlers.last)
-		assert.Nil(t, asyncErrHandlers.last.next)
-
-		assert.NotNil(t, asyncErrHandlers.head.handler)
-		assert.Equal(t, reflect.TypeOf(asyncErrHandlers.head.handler).String(), fn_sig)
-
-		assert.NotNil(t, asyncErrHandlers.head.next.handler)
-		assert.Equal(t, reflect.TypeOf(asyncErrHandlers.head.next.handler).String(), fn_sig)
+		assert.Len(t, asyncErrHandlers, 2)
+		assert.Equal(t, reflect.TypeOf(asyncErrHandlers[0]).String(), fn_sig)
+		assert.Equal(t, reflect.TypeOf(asyncErrHandlers[1]).String(), fn_sig)
 	})
 }
 
@@ -126,17 +99,8 @@ func TestFixErrHandlers(t *testing.T) {
 		AddSyncErrHandler(func(e Err, tm time.Time) {})
 		AddAsyncErrHandler(func(e Err, tm time.Time) {})
 
-		assert.NotNil(t, syncErrHandlers.head)
-		assert.NotNil(t, syncErrHandlers.last)
-		assert.Equal(t, syncErrHandlers.head, syncErrHandlers.last)
-		assert.Nil(t, syncErrHandlers.last.next)
-		assert.Nil(t, syncErrHandlers.head.next)
-
-		assert.NotNil(t, asyncErrHandlers.head)
-		assert.NotNil(t, asyncErrHandlers.last)
-		assert.Equal(t, asyncErrHandlers.head, asyncErrHandlers.last)
-		assert.Nil(t, asyncErrHandlers.last.next)
-		assert.Nil(t, asyncErrHandlers.head.next)
+		assert.Len(t, syncErrHandlers, 1)
+		assert.Len(t, asyncErrHandlers, 1)
 
 		assert.False(t, isErrHandlersFixed)
 
@@ -147,17 +111,8 @@ func TestFixErrHandlers(t *testing.T) {
 		AddSyncErrHandler(func(e Err, tm time.Time) {})
 		AddAsyncErrHandler(func(e Err, tm time.Time) {})
 
-		assert.NotNil(t, syncErrHandlers.head)
-		assert.NotNil(t, syncErrHandlers.last)
-		assert.Equal(t, syncErrHandlers.head, syncErrHandlers.last)
-		assert.Nil(t, syncErrHandlers.last.next)
-		assert.Nil(t, syncErrHandlers.head.next)
-
-		assert.NotNil(t, asyncErrHandlers.head)
-		assert.NotNil(t, asyncErrHandlers.last)
-		assert.Equal(t, asyncErrHandlers.head, asyncErrHandlers.last)
-		assert.Nil(t, asyncErrHandlers.last.next)
-		assert.Nil(t, asyncErrHandlers.head.next)
+		assert.Len(t, syncErrHandlers, 1)
+		assert.Len(t, asyncErrHandlers, 1)
 	})
 }
 
@@ -215,9 +170,9 @@ func TestNotifyErr(t *testing.T) {
 
 		assert.Equal(t, syncLogs.Len(), 2)
 		log := syncLogs.Front()
-		assert.Contains(t, log.Value, "github.com/sttk/errs.Err { reason = github.com/sttk/errs.FailToDoSomething, file = notify_test.go, line = 214 }-1:")
+		assert.Contains(t, log.Value, "github.com/sttk/errs.Err { reason = github.com/sttk/errs.FailToDoSomething, file = notify_test.go, line = 169 }-1:")
 		log = log.Next()
-		assert.Contains(t, log.Value, "github.com/sttk/errs.Err { reason = github.com/sttk/errs.FailToDoSomething, file = notify_test.go, line = 214 }-2:")
+		assert.Contains(t, log.Value, "github.com/sttk/errs.Err { reason = github.com/sttk/errs.FailToDoSomething, file = notify_test.go, line = 169 }-2:")
 		log = log.Next()
 		assert.Nil(t, log)
 
@@ -225,9 +180,9 @@ func TestNotifyErr(t *testing.T) {
 
 		assert.Equal(t, asyncLogs.Len(), 2)
 		log = asyncLogs.Front()
-		assert.Contains(t, log.Value, "github.com/sttk/errs.Err { reason = github.com/sttk/errs.FailToDoSomething, file = notify_test.go, line = 214 }-4:")
+		assert.Contains(t, log.Value, "github.com/sttk/errs.Err { reason = github.com/sttk/errs.FailToDoSomething, file = notify_test.go, line = 169 }-4:")
 		log = log.Next()
-		assert.Contains(t, log.Value, "github.com/sttk/errs.Err { reason = github.com/sttk/errs.FailToDoSomething, file = notify_test.go, line = 214 }-3:")
+		assert.Contains(t, log.Value, "github.com/sttk/errs.Err { reason = github.com/sttk/errs.FailToDoSomething, file = notify_test.go, line = 169 }-3:")
 		log = log.Next()
 		assert.Nil(t, log)
 	})
