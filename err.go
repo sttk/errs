@@ -78,12 +78,12 @@
 package errs
 
 import (
-	"bytes"
 	"fmt"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"strconv"
+	"strings"
 )
 
 // Err is the struct that represents an error with a reason.
@@ -156,13 +156,13 @@ func (e Err) Line() int {
 // Error returns a string representation of the Err instance.
 // It formats the error, including the package path, reason, and cause.
 func (e Err) Error() string {
-	var buf bytes.Buffer
+	var buf strings.Builder
 
 	t := reflect.TypeOf(e)
 	s := t.PkgPath()
 	if len(s) > 0 {
 		buf.WriteString(s)
-		buf.WriteByte('.')
+		buf.WriteString(".")
 	}
 	buf.WriteString(t.Name())
 
@@ -187,7 +187,7 @@ func (e Err) Error() string {
 			s := t.PkgPath()
 			if len(s) > 0 {
 				buf.WriteString(s)
-				buf.WriteByte('.')
+				buf.WriteString(".")
 			}
 			buf.WriteString(t.Name())
 
