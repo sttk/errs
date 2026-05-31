@@ -157,46 +157,39 @@ This framework supports Go 1.18 or later.
 ### Actual test results for each Go version:
 
 ```sh
-% gvm-fav -tags=github.sttk.errs.notify
-Now using version go1.18.10
-go version go1.18.10 darwin/amd64
-ok  	github.com/sttk/errs	0.958s	coverage: 100.0% of statements
+% go-fav -tags=github.sttk.errs.notify 1.26.2 1.25.9 \
+         -ldflags="-linkmode=external" 1.24.13 1.23.12 1.22.12 1.21.13 1.20.14 1.19.13 1.18.10
+go version go1.26.2 darwin/amd64
+ok  	github.com/sttk/errs	1.230s	coverage: 98.8% of statements
 
-Now using version go1.19.13
-go version go1.19.13 darwin/amd64
-ok  	github.com/sttk/errs	0.986s	coverage: 100.0% of statements
+go version go1.25.9 darwin/amd64
+ok  	github.com/sttk/errs	1.191s	coverage: 98.8% of statements
 
-Now using version go1.20.14
-go version go1.20.14 darwin/amd64
-ok  	github.com/sttk/errs	0.969s	coverage: 100.0% of statements
+go version go1.24.13 darwin/amd64
+ok  	github.com/sttk/errs	1.180s	coverage: 98.8% of statements
 
-Now using version go1.21.13
-go version go1.21.13 darwin/amd64
-ok  	github.com/sttk/errs	0.969s	coverage: 100.0% of statements
+go version go1.23.12 darwin/amd64
+ok  	github.com/sttk/errs	1.173s	coverage: 98.8% of statements
 
-Now using version go1.22.12
 go version go1.22.12 darwin/amd64
-ok  	github.com/sttk/errs	0.968s	coverage: 100.0% of statements
+ok  	github.com/sttk/errs	1.168s	coverage: 98.8% of statements
 
-Now using version go1.23.10
-go version go1.23.10 darwin/amd64
-ok  	github.com/sttk/errs	0.970s	coverage: 100.0% of statements
+go version go1.21.13 darwin/amd64
+ok  	github.com/sttk/errs	1.208s	coverage: 98.8% of statements
 
-Now using version go1.24.6
-go version go1.24.6 darwin/amd64
-ok  	github.com/sttk/errs	0.998s	coverage: 100.0% of statements
+go version go1.20.14 darwin/amd64
+ok  	github.com/sttk/errs	1.174s	coverage: 98.8% of statements
 
-Now using version go1.25.0
-go version go1.25.0 darwin/amd64
-ok  	github.com/sttk/errs	0.994s	coverage: 100.0% of statements
+go version go1.19.13 darwin/amd64
+ok  	github.com/sttk/errs	1.170s	coverage: 98.8% of statements
 
-Back to go1.25.0
-Now using version go1.25.0
+go version go1.18.10 darwin/amd64
+ok  	github.com/sttk/errs	1.159s	coverage: 98.8% of statements
 ```
 
 ## License
 
-Copyright (C) 2025 Takayuki Sato
+Copyright (C) 2025-2026 Takayuki Sato
 
 This program is free software under MIT License.<br>
 See the file LICENSE in this distribution for more details.
