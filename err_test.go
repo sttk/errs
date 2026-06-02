@@ -37,21 +37,21 @@ func TestErr(t *testing.T) {
 		t.Run("reason is a value", func(t *testing.T) {
 			err := errs.New(InvalidValue{Name: "foo", Value: "abc"})
 
-			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err { reason = github.com/sttk/errs_test.InvalidValue { Name: foo, Value: abc }, file = err_test.go, line = 38 }")
+			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err {reason:github.com/sttk/errs_test.InvalidValue{Name:foo Value:abc} file:err_test.go line:38}")
 			assert.Nil(t, err.Cause())
 		})
 
 		t.Run("reason is a pointer", func(t *testing.T) {
 			err := errs.New(&InvalidValue{Name: "foo", Value: "abc"})
 
-			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err { reason = github.com/sttk/errs_test.InvalidValue { Name: foo, Value: abc }, file = err_test.go, line = 45 }")
+			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err {reason:github.com/sttk/errs_test.InvalidValue{Name:foo Value:abc} file:err_test.go line:45}")
 			assert.Nil(t, err.Cause())
 		})
 
 		t.Run("reason is nil", func(t *testing.T) {
 			err := errs.New(nil)
 
-			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err { reason = nil, file = err_test.go, line = 52 }")
+			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err {}")
 			assert.Nil(t, err.Cause())
 		})
 
@@ -59,7 +59,7 @@ func TestErr(t *testing.T) {
 			cause := errors.New("def")
 			err := errs.New(InvalidValue{Name: "foo", Value: "abc"}, cause)
 
-			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err { reason = github.com/sttk/errs_test.InvalidValue { Name: foo, Value: abc }, file = err_test.go, line = 60, cause = def }")
+			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err {reason:github.com/sttk/errs_test.InvalidValue{Name:foo Value:abc} file:err_test.go line:60 cause:def}")
 			assert.Equal(t, err.Cause(), cause)
 		})
 
@@ -67,7 +67,7 @@ func TestErr(t *testing.T) {
 			cause := InvalidValueError{Name: "bar", Value: "def"}
 			err := errs.New(InvalidValue{Name: "foo", Value: "abc"}, cause)
 
-			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err { reason = github.com/sttk/errs_test.InvalidValue { Name: foo, Value: abc }, file = err_test.go, line = 68, cause = InvalidValue { Name: bar, Value: def } }")
+			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err {reason:github.com/sttk/errs_test.InvalidValue{Name:foo Value:abc} file:err_test.go line:68 cause:InvalidValue { Name: bar, Value: def }}")
 			assert.Equal(t, err.Cause(), cause)
 		})
 
@@ -75,7 +75,7 @@ func TestErr(t *testing.T) {
 			cause := errs.New(FailToGetValue{Name: "foo"})
 			err := errs.New(InvalidValue{Name: "foo", Value: "abc"}, cause)
 
-			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err { reason = github.com/sttk/errs_test.InvalidValue { Name: foo, Value: abc }, file = err_test.go, line = 76, cause = github.com/sttk/errs.Err { reason = github.com/sttk/errs_test.FailToGetValue { Name: foo }, file = err_test.go, line = 75 } }")
+			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err {reason:github.com/sttk/errs_test.InvalidValue{Name:foo Value:abc} file:err_test.go line:76 cause:github.com/sttk/errs.Err {reason:github.com/sttk/errs_test.FailToGetValue{Name:foo} file:err_test.go line:75}}")
 			assert.Equal(t, err.Cause(), cause)
 		})
 
@@ -83,7 +83,7 @@ func TestErr(t *testing.T) {
 			cause := errors.New("def")
 			err := errs.New(nil, cause)
 
-			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err { reason = nil, file = err_test.go, line = 84, cause = def }")
+			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err {}")
 			assert.Equal(t, err.Cause(), cause)
 		})
 
@@ -91,28 +91,28 @@ func TestErr(t *testing.T) {
 			var reason error = nil
 			err := errs.New(&reason)
 
-			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err { reason = <nil>, file = err_test.go, line = 92 }")
+			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err {reason:<nil> file:err_test.go line:92}")
 			assert.Nil(t, err.Cause())
 		})
 
 		t.Run("reason is a boolean", func(t *testing.T) {
 			err := errs.New(true)
 
-			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err { reason = true, file = err_test.go, line = 99 }")
+			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err {reason:true file:err_test.go line:99}")
 			assert.Nil(t, err.Cause())
 		})
 
 		t.Run("reason is a number", func(t *testing.T) {
 			err := errs.New(123)
 
-			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err { reason = 123, file = err_test.go, line = 106 }")
+			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err {reason:123 file:err_test.go line:106}")
 			assert.Nil(t, err.Cause())
 		})
 
 		t.Run("reason is a string", func(t *testing.T) {
 			err := errs.New("abc")
 
-			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err { reason = abc, file = err_test.go, line = 113 }")
+			assert.Equal(t, err.Error(), "github.com/sttk/errs.Err {reason:abc file:err_test.go line:113}")
 			assert.Nil(t, err.Cause())
 		})
 	})
@@ -120,7 +120,7 @@ func TestErr(t *testing.T) {
 	t.Run("Ok", func(t *testing.T) {
 		err := errs.Ok()
 
-		assert.Equal(t, err.Error(), "github.com/sttk/errs.Err { reason = nil, file = , line = 0 }")
+		assert.Equal(t, err.Error(), "github.com/sttk/errs.Err {}")
 		assert.Nil(t, err.Cause())
 	})
 
@@ -491,12 +491,12 @@ func TestErr(t *testing.T) {
 	t.Run("Print", func(t *testing.T) {
 		t.Run("%v", func(t *testing.T) {
 			err := errs.New(InvalidValue{Name: "abc", Value: "def"})
-			assert.Equal(t, fmt.Sprintf("%v", err), `github.com/sttk/errs.Err { reason = github.com/sttk/errs_test.InvalidValue { Name: abc, Value: def }, file = err_test.go, line = 493 }`)
+			assert.Equal(t, fmt.Sprintf("%v", err), `github.com/sttk/errs.Err {reason:github.com/sttk/errs_test.InvalidValue{Name:abc Value:def} file:err_test.go line:493}`)
 		})
 
 		t.Run("%w", func(t *testing.T) {
 			err := errs.New(InvalidValue{Name: "abc", Value: "def"})
-			assert.Equal(t, fmt.Errorf("%w", err).Error(), `github.com/sttk/errs.Err { reason = github.com/sttk/errs_test.InvalidValue { Name: abc, Value: def }, file = err_test.go, line = 498 }`)
+			assert.Equal(t, fmt.Errorf("%w", err).Error(), `github.com/sttk/errs.Err {reason:github.com/sttk/errs_test.InvalidValue{Name:abc Value:def} file:err_test.go line:498}`)
 		})
 	})
 }

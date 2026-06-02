@@ -40,10 +40,10 @@ func ExampleNew() {
 	}, cause)
 	fmt.Printf("(4) %v\n", err)
 	// Output:
-	// (1) github.com/sttk/errs.Err { reason = github.com/sttk/errs_test.FailToDoSomething, file = example_err_test.go, line = 20 }
-	// (2) github.com/sttk/errs.Err { reason = github.com/sttk/errs_test.FailToDoWithParams { Param1: ABC, Param2: 123 }, file = example_err_test.go, line = 24 }
-	// (3) github.com/sttk/errs.Err { reason = github.com/sttk/errs_test.FailToDoSomething, file = example_err_test.go, line = 33, cause = Causal error }
-	// (4) github.com/sttk/errs.Err { reason = github.com/sttk/errs_test.FailToDoWithParams { Param1: ABC, Param2: 123 }, file = example_err_test.go, line = 37, cause = Causal error }
+	// (1) github.com/sttk/errs.Err {reason:github.com/sttk/errs_test.FailToDoSomething file:example_err_test.go line:20}
+	// (2) github.com/sttk/errs.Err {reason:github.com/sttk/errs_test.FailToDoWithParams{Param1:ABC Param2:123} file:example_err_test.go line:24}
+	// (3) github.com/sttk/errs.Err {reason:github.com/sttk/errs_test.FailToDoSomething file:example_err_test.go line:33 cause:Causal error}
+	// (4) github.com/sttk/errs.Err {reason:github.com/sttk/errs_test.FailToDoWithParams{Param1:ABC Param2:123} file:example_err_test.go line:37 cause:Causal error}
 }
 
 func ExampleOk() {
@@ -51,7 +51,7 @@ func ExampleOk() {
 	fmt.Printf("err = %v\n", err)
 	fmt.Printf("err.IsOk() = %v\n", err.IsOk())
 	// Output:
-	// err = github.com/sttk/errs.Err { reason = nil, file = , line = 0 }
+	// err = github.com/sttk/errs.Err {}
 	// err.IsOk() = true
 }
 
@@ -80,7 +80,7 @@ func ExampleErr_Error() {
 	}, cause)
 	fmt.Printf("%v\n", err.Error())
 	// Output:
-	// github.com/sttk/errs.Err { reason = github.com/sttk/errs_test.FailToDoSomething { Param1: ABC, Param2: 123 }, file = example_err_test.go, line = 77, cause = Causal error }
+	// github.com/sttk/errs.Err {reason:github.com/sttk/errs_test.FailToDoSomething{Param1:ABC Param2:123} file:example_err_test.go line:77 cause:Causal error}
 }
 
 func ExampleErr_IsOk() {

@@ -82,7 +82,6 @@ import (
 	"path/filepath"
 	"reflect"
 	"runtime"
-	"strconv"
 	"strings"
 )
 
@@ -105,9 +104,9 @@ import (
 // Go programs.
 type Err struct {
 	reason any
-	cause  error
 	file   string
 	line   int
+	cause  error
 }
 
 // Ok returns an instance of Err with no reason, indicating no error.
@@ -156,79 +155,39 @@ func (e Err) Line() int {
 // Error returns a string representation of the Err instance.
 // It formats the error, including the package path, reason, and cause.
 func (e Err) Error() string {
-	var buf strings.Builder
-
-	t := reflect.TypeOf(e)
-	s := t.PkgPath()
-	if len(s) > 0 {
-		buf.WriteString(s)
-		buf.WriteString(".")
+	if e.reason == nil { // Ok
+		return "github.com/sttk/errs.Err {}"
 	}
-	buf.WriteString(t.Name())
 
-	buf.WriteString(" { reason = ")
-
-	if e.reason == nil {
-		buf.WriteString("nil")
-	} else {
-		v := reflect.ValueOf(e.reason)
-
-		if v.Kind() == reflect.Ptr {
-			v = v.Elem()
+	v := reflect.ValueOf(e.reason)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+	var reason string
+	if v.Kind() == reflect.Struct {
+		t := v.Type()
+		reason = t.PkgPath()
+		if len(reason) > 0 {
+			reason += "."
 		}
-
-		if v.Kind() != reflect.Struct {
-			if v.CanInterface() {
-				buf.WriteString(fmt.Sprintf("%v", v.Interface()))
-			}
-		} else {
-			t := v.Type()
-
-			s := t.PkgPath()
-			if len(s) > 0 {
-				buf.WriteString(s)
-				buf.WriteString(".")
-			}
-			buf.WriteString(t.Name())
-
-			n := v.NumField()
-
-			if n > 0 {
-				buf.WriteString(" { ")
-
-				for i := 0; i < n; i++ {
-					if i > 0 {
-						buf.WriteString(", ")
-					}
-
-					k := t.Field(i).Name
-
-					f := v.Field(i)
-					if f.CanInterface() { // false, if the field is not public
-						buf.WriteString(k)
-						buf.WriteString(": ")
-						buf.WriteString(fmt.Sprintf("%v", f.Interface()))
-					}
-				}
-
-				buf.WriteString(" }")
-			}
+		reason += t.Name()
+		flds := fmt.Sprintf("%+v", e.reason)
+		if strings.HasPrefix(flds, "&") {
+			flds = flds[1:]
 		}
+		if flds != "{}" {
+			reason += flds
+		}
+	} else if v.CanInterface() {
+		reason = fmt.Sprintf("%v", v.Interface())
 	}
 
-	buf.WriteString(", file = ")
-	buf.WriteString(e.file)
-	buf.WriteString(", line = ")
-	buf.WriteString(strconv.Itoa(e.line))
-
-	if e.cause != nil {
-		buf.WriteString(", cause = ")
-		buf.WriteString(e.cause.Error())
+	if e.cause == nil {
+		return fmt.Sprintf("github.com/sttk/errs.Err {reason:%s file:%s line:%d}",
+			reason, e.file, e.line)
 	}
-
-	buf.WriteString(" }")
-
-	return buf.String()
+	return fmt.Sprintf("github.com/sttk/errs.Err {reason:%s file:%s line:%d cause:%s}",
+		reason, e.file, e.line, e.cause)
 }
 
 // Unwrap returns the underlying cause of the error, allowing it to be chained.
