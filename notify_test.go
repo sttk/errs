@@ -172,9 +172,9 @@ func TestNotifyErr(t *testing.T) {
 
 		assert.Equal(t, syncLogs.Len(), 2)
 		log := syncLogs.Front()
-		assert.Contains(t, log.Value, "github.com/sttk/errs.Err { reason = github.com/sttk/errs.FailToDoSomething, file = notify_test.go, line = 171 }-1:")
+		assert.Contains(t, log.Value, "github.com/sttk/errs.Err {reason:github.com/sttk/errs.FailToDoSomething file:notify_test.go line:171}-1:")
 		log = log.Next()
-		assert.Contains(t, log.Value, "github.com/sttk/errs.Err { reason = github.com/sttk/errs.FailToDoSomething, file = notify_test.go, line = 171 }-2:")
+		assert.Contains(t, log.Value, "github.com/sttk/errs.Err {reason:github.com/sttk/errs.FailToDoSomething file:notify_test.go line:171}-2:")
 		log = log.Next()
 		assert.Nil(t, log)
 
@@ -182,9 +182,9 @@ func TestNotifyErr(t *testing.T) {
 
 		assert.Equal(t, asyncLogs.Len(), 2)
 		log = asyncLogs.Front()
-		assert.Contains(t, log.Value, "github.com/sttk/errs.Err { reason = github.com/sttk/errs.FailToDoSomething, file = notify_test.go, line = 171 }-4:")
+		assert.Contains(t, log.Value, "github.com/sttk/errs.Err {reason:github.com/sttk/errs.FailToDoSomething file:notify_test.go line:171}-4:")
 		log = log.Next()
-		assert.Contains(t, log.Value, "github.com/sttk/errs.Err { reason = github.com/sttk/errs.FailToDoSomething, file = notify_test.go, line = 171 }-3:")
+		assert.Contains(t, log.Value, "github.com/sttk/errs.Err {reason:github.com/sttk/errs.FailToDoSomething file:notify_test.go line:171}-3:")
 		log = log.Next()
 		assert.Nil(t, log)
 	})
