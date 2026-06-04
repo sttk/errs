@@ -1,19 +1,41 @@
 # [errs][repo-url] [![Go Reference][pkg-dev-img]][pkg-dev-url] [![CI Status][ci-img]][ci-url] [![MIT License][mit-img]][mit-url]
 
-`errs` is a package for handling errors with reasons for Golang programs.
+A library for handling errors with reasons for Go.
 
-This package provides the structure type `Err` which takes a parameter of any type as a reason for an error.
-This parameter is typically a structure type, and its name represents the reason, and its fields represent the situation where the error occurred.
+## Overview
 
-## Features
+`errs` is an error handling library for Go designed to focus on the "Reason" behind an error.
 
-- **Structured error representation** using any Go type as the error reason.
-- **Type-safe error handling** through type switches or type assertions.
-- **Optional error cause** to support error chaining.
-- **Captured file and line number** where the error was created.
-- **Optional error notification system** enabled via build tag: `github.sttk.errs.notify`.
+### Expressing "Why It Failed" via the Type System
 
-## Installation
+Rather than treating errors as simple message strings or type-erased objects, it embraces a design that expresses "why it failed" through types, allowing for safe and clear propagation and determination.
+
+For error reasons, you can use anything from lightweight types like `string` to type-safe definitions using `struct`, all handled flexibly with the same API.
+By using an `struct` in particular, you can not only express failure factors within the type system but also hold contextual information in its fields, propagating the situation and relevant data at the time of the error as-is.
+Furthermore, since reasons can be determined in a type-safe manner using type-switch statement, you can avoid fragile error handling that relies on string comparisons.
+
+### Decentralized Error Definition and Traceability
+
+`errs` encourages defining error reasons close to where they occur.
+This eliminates the need to share a massive, monolithic error type across the entire application, enabling a highly maintenable design while keeping dependencies between modules clean.
+Type information is utilized to identify the reason, and the type identifiers required for this determination are resolved statically at compile time.
+This provides type-safe error handling with minimal runtime overhead.
+
+The core `Err` type of the library implements `error`, allowing it to integrate naturally with standard Go error handling.
+It can also retain lower-layer errors as causes, enabling you to manage the "Reason" of the upper layer and the "Cause" of the lower layer separately.
+Additionally, it automatically records the file name and line number when an error is generated, making log output and failure analysis effortless.
+
+### Powerful Error-Instantiation Notification & Monitoring Ecosystem
+
+Furthermore, `errs` features a mechanism to notify error generation events.
+By compiling with the build tag: `github.sttk.errs.notify`, an automatic notification can be sent to registered handlers the exact moment an `Err` is created.
+It supports synchronous handlers and asynchronous handlers, and it accommodates registration within functions.
+This makes it easy to implement logging, monitoring, metrics collection, and integration with telemetry systems.
+
+While standard `fmt.Errorf` and traditional wrapper libraries focus primarily on annotating and propagating errors, `errs` emphasizes explicitly defining the reason for failure through types and reliably observing the exact moment it occurs.
+This library is ideal for scenarios where you want to tightly manage the semantics of errors within your application while seamlessly integrating with production monitoring and operational infrastructure.
+
+## Install
 
 ```sh
 go get github.com/sttk/errs
@@ -21,15 +43,38 @@ go get github.com/sttk/errs
 
 ## Usage
 
-### Creates `Err`(s)
+### Locally Defined Reasons and Instantiate an Err with Them
 
-First, imports `errs` package as follows:
+An `Err` struct can be instantiated with any arbitrary error reason.
+Typically, a struct defined to indicate the cause or context of the error is used as the reason.
+This reason does not need to belong to a single, centrally managed something; rather, it is preferable to define it close to where the error using it as a reason actually occurs.
 
 ```go
 import "github.com/sttk/errs"
+
+type /* error reasons */ (
+  IllegalState struct { state string }
+)
+
+err := errs.New(IllegalState { state: "bad state" })
 ```
 
-Next, defines structure types which represent reasons of errors.
+An Err can also be instantiated with the underlying cause error along with the reason.
+
+```go
+import (
+  "fmt"
+  "github.com/sttk/errs"
+)
+
+cause := fmt.Errorf("causal error")
+
+err := errs.New(IllegalState { state: "bad state" }, cause)
+```
+
+### Type-Safe Reason Identification
+
+By using the type-switch statement, you can extract the error reason as the specified type.
 
 ```go
 type /* error reasons */ (
@@ -40,98 +85,29 @@ type /* error reasons */ (
     Param2 int,
   }
 )
-```
 
-Then, creates `Err`(s).
-
-```go
-func f0() errs.Err {
-    ...
-    return errs.Ok()
-}
-```
-
-```go
-func f1() errs.Err {
-    ...
-    return errs.New(FailToDoSomething{})
-}
-
-func f2() errs.Err {
-    ...
-    return errs.New(FailToDoWithParams{Param1: "abc", Param2: 123})
-}
-```
-
-It is enabled to use an `Err` as an `error`.
-
-```go
-func f3() error {
-    ...
-    return errs.New(FailToDoSomething{})
-}
-```
-
-It is enabled to take a cause error.
-
-```go
-var cause = errors.New("I/O timeout")
-
-func f4() errs.Err {
-    ...
-    return errs.New(FailToDoWithParams{Param1: "abc", Param2: 123}, cause)
-}
-```
-
-### Operating a `Err`
-
-```go
-err := f4()
-
-fmt.Println(err.Reason())  // => path/to/pkg.FailToDoWithParams { Param1: abc, Param2: 123 }
-fmt.Println(err.File())    // e.g. source_file.go
-fmt.Println(err.Line())    // e.g. 123
-fmt.Println(err.Cause())   // => I/O timeout
-fmt.Println(err.Error())   // => github.com/sttk/errs.Err { reason = path/to/pkg.FailToDoWithParams { Param1: abc, Param2: 123 }, file = source_file.go, line = 123, cause = I/O timeout }
-
-fmt.Println(err.IsOk())    // => true
-fmt.Println(err.IsNotOk()) // => false
-
-fmt.Println(err.Unwrap())  // => I/O timeout
-fmt.Println(errors.Is(err, cause)) // => true
-```
-```go
-err := f0().IfOkThen(func() errs.Err {
-    // This function is executed.
-})
-```
-```go
-err := f1().IsOkThen(func() errs.Err {
-    // This function is not executed.
-})
-```
-
-### Type-safe error handling
-
-A reason of an `Err` can be identified with a type-switch statement.
-
-```go
 switch reason := err.Reason().(type) {
 case FailToDoSomething:
   fmt.Println("FailToDoSomething")
 case FailToDoWithParams:
-  fmt.Printf("FailToDoWithParam: Param1 = %s, Param = %d\n", reason.Param1, reason.Param2)
+  fmt.Printf("FailToDoWithParam: Param1 = %s, Params = %d\n", reason.Param1, reason.Param2)
 default:
   fmt.Println("Unknown reason")
 }
 ```
 
-### Error notification (Optional)
+### Error Handler Registration
 
-> To use the error notification feature, build with the tag: `github.sttk.errs.notify`.
+This library optionally provides a feature to notify pre-registered error handlers when an `Err` is instantiated.
+Multiple error handlers can be registered, and you can choose to receive notifications either synchronously or asynchronously.
 
-Adds synchronous/asynchronous handlers.
+To register handlers, you can use the following functions:
 
+* `errs.AddSyncErrHandler`: For synchronous handlers.
+* `errs.AddAsyncErrHandler`: For asynchronous handlers.
+
+Error notifications will not occur until the `FixErrHandlers` function is called.
+This function locks the current set of error handlers, preventing further additions and enabling notification processing.
 ```go
 errs.AddSyncErrHandler(func(e errs.Err, tm time.Time) {
     fmt.Println("SYNC:", tm, e)
@@ -140,15 +116,10 @@ errs.AddSyncErrHandler(func(e errs.Err, tm time.Time) {
 errs.AddAsyncErrHandler(func(e errs.Err, tm time.Time) {
     logToRemoteServer(e, tm)
 })
-```
 
-Prevents the addition of extra error handlers and enables error notifications.
-
-```go
+// Fix the handlers to start receiving notifications.
 errs.FixErrHandlers()
 ```
-
-After this point, each time an `Err` is created, it will be notified to the registered error handlers.
 
 ## Supporting Go versions
 
