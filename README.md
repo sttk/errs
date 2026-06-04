@@ -46,7 +46,7 @@ go get github.com/sttk/errs
 To get a specific version of this package, run the following command:
 
 ```bash
-go get github.com/sttk/errs@v0.1.1
+go get github.com/sttk/errs@v0.2.0
 ```
 
 ## Usage
@@ -175,7 +175,7 @@ See the file LICENSE in this distribution for more details.
 
 
 [repo-url]: https://github.com/sttk/errs
-[release-img]: https://img.shields.io/badge/release-0.1.1-0f9999.svg
+[release-img]: https://img.shields.io/badge/release-0.2.0-0f9999.svg
 [release-url]: https://github.com/sttk/errs/releases
 [pkg-dev-img]: https://pkg.go.dev/badge/github.com/sttk/errs.svg
 [pkg-dev-url]: https://pkg.go.dev/github.com/sttk/errs
