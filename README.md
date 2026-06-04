@@ -1,4 +1,4 @@
-# [errs][repo-url] [![Go Reference][pkg-dev-img]][pkg-dev-url] [![CI Status][ci-img]][ci-url] [![MIT License][mit-img]][mit-url]
+# [errs][repo-url] [![Release][release-img]][release-url] [![Go Reference][pkg-dev-img]][pkg-dev-url] [![CI Status][ci-img]][ci-url] [![MIT License][mit-img]][mit-url]
 
 A library for handling errors with reasons for Go.
 
@@ -37,8 +37,16 @@ This library is ideal for scenarios where you want to tightly manage the semanti
 
 ## Install
 
-```sh
+To get the latest version of this package, run the following command:
+
+```bash
 go get github.com/sttk/errs
+```
+
+To get a specific version of this package, run the following command:
+
+```bash
+go get github.com/sttk/errs@v0.1.1
 ```
 
 ## Usage
@@ -167,6 +175,8 @@ See the file LICENSE in this distribution for more details.
 
 
 [repo-url]: https://github.com/sttk/errs
+[release-img]: https://img.shields.io/badge/release-0.1.1-0f9999.svg
+[release-url]: https://github.com/sttk/errs/releases
 [pkg-dev-img]: https://pkg.go.dev/badge/github.com/sttk/errs.svg
 [pkg-dev-url]: https://pkg.go.dev/github.com/sttk/errs
 [ci-img]: https://github.com/sttk/errs/actions/workflows/go.yml/badge.svg
