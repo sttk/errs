@@ -106,6 +106,8 @@ default:
 
 ### Error Handler Registration
 
+> To enable this feature, you must specify the build tag: `-tags=github.sttk.errs.notify` at compile time.
+
 This library optionally provides a feature to notify pre-registered error handlers when an `Err` is instantiated.
 Multiple error handlers can be registered, and you can choose to receive notifications either synchronously or asynchronously.
 
