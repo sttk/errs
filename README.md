@@ -11,13 +11,13 @@ A library for handling errors with reasons for Go.
 Rather than treating errors as simple message strings or type-erased objects, it embraces a design that expresses "why it failed" through types, allowing for safe and clear propagation and determination.
 
 For error reasons, you can use anything from lightweight types like `string` to type-safe definitions using `struct`, all handled flexibly with the same API.
-By using an `struct` in particular, you can not only express failure factors within the type system but also hold contextual information in its fields, propagating the situation and relevant data at the time of the error as-is.
+By using a `struct` in particular, you can not only express failure factors within the type system but also hold contextual information in its fields, propagating the situation and relevant data at the time of the error as-is.
 Furthermore, since reasons can be determined in a type-safe manner using type-switch statement, you can avoid fragile error handling that relies on string comparisons.
 
 ### Decentralized Error Definition and Traceability
 
 `errs` encourages defining error reasons close to where they occur.
-This eliminates the need to share a massive, monolithic error type across the entire application, enabling a highly maintenable design while keeping dependencies between modules clean.
+This eliminates the need to share a massive, monolithic error type across the entire application, enabling a highly maintainable design while keeping dependencies between modules clean.
 Type information is utilized to identify the reason, and the type identifiers required for this determination are resolved statically at compile time.
 This provides type-safe error handling with minimal runtime overhead.
 
@@ -55,7 +55,7 @@ go get github.com/sttk/errs@v0.2.0
 
 An `Err` struct can be instantiated with any arbitrary error reason.
 Typically, a struct defined to indicate the cause or context of the error is used as the reason.
-This reason does not need to belong to a single, centrally managed something; rather, it is preferable to define it close to where the error using it as a reason actually occurs.
+This reason does not need to be declared in a centralized file of global errors; rather, it is preferable to define it close to where the error using it as a reason actually occurs.
 
 ```go
 import "github.com/sttk/errs"
@@ -67,7 +67,7 @@ type /* error reasons */ (
 err := errs.New(IllegalState { state: "bad state" })
 ```
 
-An Err can also be instantiated with the underlying cause error along with the reason.
+An `Err` can also be instantiated with the underlying cause error along with the reason.
 
 ```go
 import (
@@ -89,8 +89,8 @@ type /* error reasons */ (
   FailToDoSomething struct {}
 
   FailToDoWithParams struct {
-    Param1 string,
-    Param2 int,
+    Param1 string
+    Param2 int
   }
 )
 
@@ -98,7 +98,7 @@ switch reason := err.Reason().(type) {
 case FailToDoSomething:
   fmt.Println("FailToDoSomething")
 case FailToDoWithParams:
-  fmt.Printf("FailToDoWithParam: Param1 = %s, Params = %d\n", reason.Param1, reason.Param2)
+  fmt.Printf("FailToDoWithParam: Param1 = %s, Param2 = %d\n", reason.Param1, reason.Param2)
 default:
   fmt.Println("Unknown reason")
 }
