@@ -137,35 +137,46 @@ This framework supports Go 1.18 or later.
 
 ### Actual test results for each Go version:
 
-```sh
+```bash
 % go-fav -tags=github.sttk.errs.notify 1.26.2 1.25.9 \
          -ldflags="-linkmode=external" 1.24.13 1.23.12 1.22.12 1.21.13 1.20.14 1.19.13 1.18.10
 go version go1.26.2 darwin/amd64
-ok  	github.com/sttk/errs	1.230s	coverage: 98.8% of statements
+ok  	github.com/sttk/errs	1.262s	coverage: 98.4% of statements
 
 go version go1.25.9 darwin/amd64
-ok  	github.com/sttk/errs	1.191s	coverage: 98.8% of statements
+ok  	github.com/sttk/errs	1.204s	coverage: 98.4% of statements
 
 go version go1.24.13 darwin/amd64
-ok  	github.com/sttk/errs	1.180s	coverage: 98.8% of statements
+# github.com/sttk/errs.test
+ld: warning: no platform load command found in '***/go.o', assuming: macOS
+ok  	github.com/sttk/errs	1.198s	coverage: 98.4% of statements
 
 go version go1.23.12 darwin/amd64
-ok  	github.com/sttk/errs	1.173s	coverage: 98.8% of statements
+# github.com/sttk/errs.test
+ld: warning: no platform load command found in '***/go.o', assuming: macOS
+ok  	github.com/sttk/errs	1.212s	coverage: 98.4% of statements
 
 go version go1.22.12 darwin/amd64
-ok  	github.com/sttk/errs	1.168s	coverage: 98.8% of statements
+ok  	github.com/sttk/errs	1.175s	coverage: 98.4% of statements
 
 go version go1.21.13 darwin/amd64
-ok  	github.com/sttk/errs	1.208s	coverage: 98.8% of statements
+ok  	github.com/sttk/errs	1.156s	coverage: 98.4% of statements
 
 go version go1.20.14 darwin/amd64
-ok  	github.com/sttk/errs	1.174s	coverage: 98.8% of statements
+# github.com/sttk/errs.test
+ld: warning: -ld_classic is deprecated and will be removed in a future release
+ld: warning: -no_pie is deprecated when targeting new OS versions
+ok  	github.com/sttk/errs	1.196s	coverage: 98.4% of statements
 
 go version go1.19.13 darwin/amd64
-ok  	github.com/sttk/errs	1.170s	coverage: 98.8% of statements
+# github.com/sttk/errs.test
+ld: warning: '***/go.o' has malformed LC_DYSYMTAB, expected 62 undefined symbols to start at index 6371, found 72 undefined symbols starting at index 64
+ok  	github.com/sttk/errs	1.117s	coverage: 98.4% of statements
 
 go version go1.18.10 darwin/amd64
-ok  	github.com/sttk/errs	1.159s	coverage: 98.8% of statements
+# github.com/sttk/errs.test
+ld: warning: '***/go.o' has malformed LC_DYSYMTAB, expected 59 undefined symbols to start at index 6244, found 69 undefined symbols starting at index 65
+ok  	github.com/sttk/errs	1.117s	coverage: 98.4% of statements
 ```
 
 ## License
